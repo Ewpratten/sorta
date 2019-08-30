@@ -2,7 +2,9 @@ package ca.retrylife.sorta;
 
 import java.util.ArrayList;
 
+import ca.retrylife.hsa2.GraphicsConsole;
 import ca.retrylife.sorta.sorters.SteppingSorter;
+import ca.retrylife.sorta.utils.Match;
 
 public class SorterChooser {
     static SorterChooser m_instance = null;
@@ -34,6 +36,38 @@ public class SorterChooser {
     }
 
     public SteppingSorter getSelection() {
+        if (m_currentSorter == null) {
+            m_currentSorter = m_sorters.get(0);
+        }
         return m_currentSorter.sorter;
+    }
+
+    public void displayChooser(GraphicsConsole gc) {
+        // Check for an empty list of sorters
+        if (m_sorters.size() == 0) {
+            gc.showDialog("No sorters are avalible", "Sorta error");
+            return;
+        }
+
+        // Operate normally
+        String selection = gc.showInputDialog("Enter a sort method\n1) Quicksort\n2) Bubblesort", "Select sort");
+
+        if (selection == null || selection.equals("")) {
+            return;
+        }
+
+        int index;
+        try{
+            index = Integer.valueOf(selection) % m_sorters.size();
+        } catch (NumberFormatException nfe){
+            return;
+        }
+
+        m_currentSorter = m_sorters.get(index);
+        
+    }
+
+    public void setList(ArrayList<Integer> lst) {
+        getSelection().set(lst);
     }
 }
